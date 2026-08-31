@@ -81,7 +81,7 @@ In this lab, you'll:
          - '-config.file=/etc/loki/loki.yaml'
          - '-target=all'
        volumes:
-         - ./loki.yaml:/etc/loki/loki.yaml:ro
+         - ./loki-config.yaml:/etc/loki/loki.yaml:ro
          - loki-data:/loki
          - loki-wal:/wal
        ports:
@@ -138,7 +138,7 @@ In this lab, you'll:
 
    Loki exposes Prometheus metrics. Add Loki as a scrape target:
 
-   Edit `compose/prometheus.yml` and add this scrape config:
+   Edit `compose/prometheus.yaml` and add this scrape config:
 
    ```yaml
    scrape_configs:

@@ -19,7 +19,7 @@ You'll deploy Prometheus as a standalone container before adding other observabi
 
 1. **Create Prometheus Configuration**
 
-   Navigate to the `compose/` directory and verify (or create) `prometheus.yml`:
+   Navigate to the `compose/` directory and verify (or create) `prometheus.yaml`:
 
    ```yaml
    global:
@@ -44,11 +44,11 @@ You'll deploy Prometheus as a standalone container before adding other observabi
        image: prom/prometheus:v3.9.1
        container_name: prometheus
        command:
-         - '--config.file=/etc/prometheus/prometheus.yml'
+         - '--config.file=/etc/prometheus/prometheus.yaml'
          - '--storage.tsdb.path=/prometheus'
          - '--storage.tsdb.retention.time=15d'
        volumes:
-         - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+         - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
          - prometheus-data:/prometheus
        ports:
          - '9090:9090'
@@ -124,7 +124,7 @@ You'll deploy Prometheus as a standalone container before adding other observabi
 
 2. **Prometheus Configuration:**
 
-   Ask: "In this `prometheus.yml` configuration, what does 'scrape_interval: 15s' control? What happens if I make it too short or too long?"
+   Ask: "In this `prometheus.yaml` configuration, what does 'scrape_interval: 15s' control? What happens if I make it too short or too long?"
 
    **What to evaluate:** Does it explain the trade-off between data granularity and resource usage? Does it mention that shorter intervals give more precise data but increase load? Does it explain that 15s is a common default? Check your actual Prometheus metrics - can you see data points every 15 seconds?
 

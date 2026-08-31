@@ -74,7 +74,7 @@ In this lab, you'll:
          - '-config.file=/etc/tempo/tempo.yaml'
          - '-target=all'
        volumes:
-         - ./tempo.yaml:/etc/tempo/tempo.yaml:ro
+         - ./tempo-config.yaml:/etc/tempo/tempo.yaml:ro
          - tempo-data:/var/tempo
        ports:
          - '3200:3200'
@@ -114,7 +114,7 @@ In this lab, you'll:
 
 5. **Add Tempo to Prometheus Scrape Targets**
 
-   Edit `compose/prometheus.yml` to add Tempo:
+   Edit `compose/prometheus.yaml` to add Tempo:
 
    ```yaml
    scrape_configs:
