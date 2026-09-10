@@ -5,7 +5,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
       - '--storage.tsdb.path=/prometheus'
-      - 'storage.tsdb.retention.time=15d'
+      - '--storage.tsdb.retention.time=15d'
     ports:
       - 9090:9090
     volumes:
