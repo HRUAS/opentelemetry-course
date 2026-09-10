@@ -5,7 +5,7 @@
 #   chmod +x cleanup-loki.sh
 #   ./cleanup-loki.sh
 
-set -euo pipefail
+set -eu
 
 LOKI_URL="http://localhost:3100"
 JOB="test_app"

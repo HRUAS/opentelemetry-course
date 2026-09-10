@@ -5,7 +5,7 @@
 #   chmod +x validate-loki.sh
 #   ./validate-loki.sh
 
-set -euo pipefail
+set -eu
 
 LOKI_URL="http://localhost:3100"
 JOB="test_app"
