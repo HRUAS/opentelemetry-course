@@ -38,21 +38,20 @@ services:
       retries: 3
       start_period: 30s
 
-  services:
-    tempo:
-      image: grafana/tempo:2.10.1
-      container_name: tempo
-      command:
-        - '-config.file=/etc/tempo/tempo.yaml'
-        - '-target=all'
-      volumes:
-        - ./tempo-config.yaml:/etc/tempo/tempo.yaml:ro
-        - tempo-data:/var/tempo
-      ports:
-        - '3200:3200'
-      networks:
-        - observability
-      restart: unless-stopped
+  tempo:
+    image: grafana/tempo:2.10.1
+    container_name: tempo
+    command:
+      - '-config.file=/etc/tempo/tempo.yaml'
+      - '-target=all'
+    volumes:
+      - ./tempo-config.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo-data:/var/tempo
+    ports:
+      - '3200:3200'
+    networks:
+      - observability
+    restart: unless-stopped
 
 volumes:
   prometheus_data:
