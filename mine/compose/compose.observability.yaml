@@ -20,7 +20,7 @@ services:
     container_name: loki
     user: root
     command:
-      - '-loki-config.file=/etc/loki/loki.yaml'
+      - '-loki-config.yaml=/etc/loki/loki.yaml'
       - '-target=all'
     volumes:
       - ./loki-config.yaml:/etc/loki/loki.yaml:ro
