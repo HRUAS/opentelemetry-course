@@ -1,0 +1,7 @@
+include:
+  - compose.observability.yaml
+
+networks:
+  observability:
+    driver: bridge
+    name: observability
