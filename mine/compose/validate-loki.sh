@@ -35,13 +35,15 @@ echo
 
 echo "3) Wait 2s for ingest..."
 sleep 2
+# end must be after the log timestamp; Loki's window does not include end.
+END_NS="$(date +%s)000000000"
 
 echo "4) Query logs with LogQL: {job=\"${JOB}\"}"
 # GET /loki/api/v1/query_range asks Loki for logs in a time window.
 RESULT="$(curl -sf -G "${LOKI_URL}/loki/api/v1/query_range" \
   --data-urlencode "query={job=\"${JOB}\"}" \
   --data-urlencode "start=${START_NS}" \
-  --data-urlencode "end=${NOW_NS}" \
+  --data-urlencode "end=${END_NS}" \
   --data-urlencode "limit=10")"
 
 echo "${RESULT}"
