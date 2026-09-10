@@ -5,12 +5,12 @@ include:
   - compose.observability.yaml
   - compose.app.yaml
 
-services:
-  frontend:
-    image: lmacademy/web-translator-frontend:v1.1.0
+# services:
+#   frontend:
+#     image: lmacademy/web-translator-frontend:v1.1.0
 
-  worker:
-    image: lmacademy/web-translator-worker:v1.1.0
+  # worker:
+  #   image: lmacademy/web-translator-worker:v1.1.0
 
 # Shared networks for all services
 networks:
