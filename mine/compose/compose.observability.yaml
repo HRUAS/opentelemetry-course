@@ -54,9 +54,6 @@ services:
         - observability
       restart: unless-stopped
 
-    volumes:
-     tempo-data:
-
 volumes:
   prometheus_data:
   loki-data:
