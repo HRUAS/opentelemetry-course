@@ -66,6 +66,7 @@ services:
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.146.1
     container_name: otel-collector
+    user: root
     command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
