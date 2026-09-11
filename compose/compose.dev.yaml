@@ -53,6 +53,8 @@ services:
       - LOG_LEVEL=debug
       - SOURCE_LANGUAGE=en
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
       - OTEL_SERVICE_NAME=translation-frontend
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
     depends_on:

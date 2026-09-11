@@ -29,7 +29,7 @@ async function startServer(): Promise<void> {
     app.use(express.static(join(__dirname, 'public')));
 
     // Initialize services
-    console.log('Initializing services-- akhil');
+    console.log('Initializing services-- akhil - akhil');
 
     queueService = new QueueService({
       host: REDIS_HOST,
