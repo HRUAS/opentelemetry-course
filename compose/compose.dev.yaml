@@ -1,43 +1,97 @@
-# Main Docker Compose file for OpenTelemetry Course
-# This file includes the observability stack and (soon) application
+# Development Environment
+# Usage: docker compose -f compose.dev.yaml up
 
 include:
   - compose.observability.yaml
-  - compose.app.yaml
 
 services:
+  redis:
+    image: redis:8.6.0-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.81.0-alpine
+    container_name: redis-exporter
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+    ports:
+      - "9121:9121"
+    networks:
+      - app
+      - observability
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
   frontend:
     build:
       context: ../app-versions/code/frontend
       dockerfile: Dockerfile.dev
       target: development
+    container_name: frontend
+    ports:
+      - "3001:3000"
     volumes:
       # Mount source code for hot reload
       - ../app-versions/code/frontend/src:/app/src:ro
       - ../app-versions/code/frontend/tsconfig.json:/app/tsconfig.json:ro
     environment:
-      - NODE_ENV=development
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3000
       - LOG_LEVEL=debug
+      - SOURCE_LANGUAGE=en
+      - NODE_ENV=development
+      - OTEL_SERVICE_NAME=translation-frontend
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - app
     command: npm run dev
+    restart: unless-stopped
 
   worker:
     build:
       context: ../app-versions/code/worker
       dockerfile: Dockerfile.dev
+    container_name: worker
     volumes:
       # Mount source code for hot reload
       - ../app-versions/code/worker/src:/app/src:ro
       # Preserve translation models (large, slow to download)
       - worker-models:/root/.local/share/argos-translate
     environment:
-      - PYTHONUNBUFFERED=1
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - LOG_LEVEL=debug
+      - SOURCE_LANGUAGE=en
+      - PYTHONUNBUFFERED=1
+      - OTEL_SERVICE_NAME=translation-worker
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - app
     command: watchmedo auto-restart --directory=./src --pattern="*.py" --recursive -- python -m src.main
+    restart: unless-stopped
 
 volumes:
   worker-models:
 
-# Shared networks for all services
 networks:
   observability:
     driver: bridge
