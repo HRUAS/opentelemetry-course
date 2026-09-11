@@ -36,7 +36,6 @@ services:
 
 volumes:
   worker-models:
-
 networks:
   observability:
     driver: bridge
@@ -44,3 +43,4 @@ networks:
   app:
     driver: bridge
     name: app
+
