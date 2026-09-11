@@ -1,32 +1,48 @@
+# Receivers are inputs. Applications send telemetry to the Collector here.
 receivers:
   otlp:
+    # OTLP is the standard OpenTelemetry wire protocol.
     protocols:
+      # gRPC endpoint for OTLP clients/exporters.
       grpc:
         endpoint: 0.0.0.0:4317
+      # HTTP endpoint for OTLP clients/exporters.
       http:
         endpoint: 0.0.0.0:4318
+  docker_stats:
+    endpoint: unix:///var/run/docker.sock
+    collection_interval: 10s
 
+# Processors run between receiving and exporting telemetry.
 processors:
+  # Batch improves export efficiency by sending telemetry in groups.
   batch:
     timeout: 10s
     send_batch_size: 1024
+  # Memory limiter helps prevent the Collector from using too much memory.
   memory_limiter:
     check_interval: 1s
     limit_mib: 512
 
+# Exporters are outputs. The Collector sends or exposes telemetry here.
 exporters:
+  # Send traces to Tempo using OTLP over gRPC.
   otlp/tempo:
     endpoint: tempo:4317
     tls:
+      # Internal Docker network traffic is plain HTTP/gRPC, not TLS.
       insecure: true
+  # Expose application metrics for Prometheus to scrape.
   prometheus:
     endpoint: 0.0.0.0:8889
+  # Send logs to Loki using OTLP over HTTP.
   otlphttp/loki:
     endpoint: http://loki:3100/otlp
     tls:
       insecure: true
 
 service:
+  # Collector's own internal metrics, separate from application metrics.
   telemetry:
     metrics:
       readers:
@@ -35,15 +51,19 @@ service:
               prometheus:
                 host: '0.0.0.0'
                 port: 8888
+  # Pipelines connect receivers -> processors -> exporters for each signal.
   pipelines:
+    # Trace data: app -> Collector -> Tempo.
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch]
       exporters: [otlp/tempo]
+    # Metric data: app -> Collector -> Prometheus scrape endpoint.
     metrics:
-      receivers: [otlp]
+      receivers: [otlp, docker_stats]
       processors: [memory_limiter, batch]
       exporters: [prometheus]
+    # Log data: app -> Collector -> Loki.
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch]
