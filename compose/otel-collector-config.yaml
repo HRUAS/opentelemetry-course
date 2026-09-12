@@ -35,6 +35,9 @@ exporters:
   # Expose application metrics for Prometheus to scrape.
   prometheus:
     endpoint: 0.0.0.0:8889
+    # Convert resource attributes (for example container name/id) into Prometheus labels.
+    resource_to_telemetry_conversion:
+      enabled: true
   # Send logs to Loki using OTLP over HTTP.
   otlphttp/loki:
     endpoint: http://loki:3100/otlp
